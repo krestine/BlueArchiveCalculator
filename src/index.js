@@ -23,7 +23,7 @@ class App extends React.Component {
 
   updateInputValue = (evt) => {
     const { name, value } = evt.target;
-    var intValue = parseInt(value);
+    var intValue = parseInt(value, 10);
     if (Number.isNaN(intValue)) {
       this.setState({
         [name]: ""
