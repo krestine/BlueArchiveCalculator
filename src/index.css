@@ -1,80 +1,36 @@
 body {
-    font: 14px "Century Gothic", Futura, sans-serif;
-    margin: 20px;
-  }
+  display: flex;
+  justify-content: center;
+}
 
-  .active {
-    font-weight: 600;
-  }
+input,
+button {
+  line-height: 1rem;
+  font-size: 1rem;
+  padding: 5px 15px;
+  border-radius: 5px;
+  outline: 0;
+  margin: 2px 0px;
+}
 
-  .inactive {
-    font-weight: normal;
-  }
-  
-  ol, ul {
-    padding-left: 30px;
-  }
-  
-  .board-row:after {
-    clear: both;
-    content: "";
-    display: table;
-  }
-  
-  .status {
-    margin-bottom: 10px;
-  }
-  
-  .square {
-    background: #fff;
-    border: 1px solid #999;
-    float: left;
-    font-size: 24px;
-    font-weight: bold;
-    line-height: 34px;
-    height: 34px;
-    margin-right: -1px;
-    margin-top: -1px;
-    padding: 0;
-    text-align: center;
-    width: 34px;
-  }
-  
-  .square:focus {
-    outline: none;
-  }
-  
-  .kbd-navigation .square:focus {
-    background: #ddd;
-  }
+input {
+  display: inline-block;
+}
 
-  .winningSquares {
-    color: #000;
-    background: rgb(142, 252, 99);
-  }
+label{
+  display: block;
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 2px 0px;
+}
 
-  .draw {
-    text-align: center;
-    width: 102px;
-    height: 102px;
-    background-color: #ddd;
-    padding: 20px;
-  }
+button {
+  margin: 0.5rem;
+  padding: 0.5 1rem;
+  font-weight: bold;
+  box-shadow: 0px 2px 2px lightgray;
+}
 
-  .win {
-    text-align: center;
-  }
-
-  .reset {
-    padding: 5px;
-  }
-  
-  .game {
-    display: flex;
-    flex-direction: row;
-  }
-  
-  .game-info {
-    margin-left: 20px;
-  }
-  
+text{
+	font-weight: bold;
+}
