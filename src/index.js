@@ -30,14 +30,19 @@ class App extends React.Component {
     MinDamString: {"Kor":"대미지 범위 : ", "Eng":"Dam. Variance : "},
 	TargetScore: "",
 	BattleTime: "",
-	BattleTimeError : 0,
-    Language: "Kor",
+	BattleTimeMinute: "",
+	LeftTime: "",
+	LeftTimeMinute: "",
+	UseableCost: "",
+	BattleTimeError: 0,
+	CostRecoveryBonus: 0,
 	RaidType: "Type1",
 	RaidDifficulty: "Hardcore",
 	RaidBonusScoreType1: {"Hardcore":4600000.0, "Extreme":9200000.0},
 	RaidBonusScoreType2: {"Hardcore":4984000.0, "Extreme":9968000.0},
 	RaidTimeScore: {"Hardcore":3200.0, "Extreme":6400.0},
 	RaidTimeMult: {"Type1":960.0, "Type2":720.0},
+	RaidLeftTime: {"Type1":240.0, "Type2":180.0},
     TargetscoreString: {"Kor":"목표 점수", "Eng":"Target score"},
 	MinuteString: {"Kor":"분", "Eng":"min"},
 	SecondString: {"Kor":"초", "Eng":"sec"}
@@ -60,6 +65,12 @@ class App extends React.Component {
         [name]: intValue
       });
     }
+  };
+  
+  CostRecoveryChange = (e) => {
+    this.setState({
+      CostRecoveryBonus: e.target.value
+    });
   };
 
   calculate = () => {
@@ -87,13 +98,24 @@ class App extends React.Component {
 	var timeScore = this.state.RaidTimeScore[this.state.RaidDifficulty];
 	var timeMult = this.state.RaidTimeMult[this.state.RaidType];
 	var bonusScore = 0;
-	if (this.state.RaidType == "Type1") {
+	if (this.state.RaidType === "Type1") {
 		bonusScore = this.state.RaidBonusScoreType1[this.state.RaidDifficulty];
 	} else {
 		bonusScore = this.state.RaidBonusScoreType2[this.state.RaidDifficulty];
 	}
-	var targetTime = (((this.state.TargetScore - bonusScore) / timeScore) - this.state.RaidTimeMult[this.state.RaidType]) * -1.0;
-	this.setState({ BattleTime: targetTime });
+	var targetTime = (((this.state.TargetScore - bonusScore) / timeScore) - timeMult) * -1.0;
+	var targetMinute = parseInt(targetTime / 60, 10);
+	var leftTime = this.state.RaidLeftTime[this.state.RaidType] - targetTime;
+	var leftMinute = parseInt(leftTime / 60, 10);
+	var recoveryRate = 4200.0 + parseFloat(this.state.CostRecoveryBonus);
+	var totalCost = (recoveryRate / 10000.0) * (targetTime - 2.0);
+	targetTime = targetTime % 60;
+	leftTime = leftTime % 60;
+	this.setState({ BattleTime: targetTime.toFixed(3) });
+	this.setState({ BattleTimeMinute: targetMinute });
+	this.setState({ LeftTime: leftTime.toFixed(3) });
+	this.setState({ LeftTimeMinute: leftMinute });
+	this.setState({ UseableCost: totalCost.toFixed(3) });
   };
 
   resetAll = () => {
@@ -231,6 +253,25 @@ class App extends React.Component {
 			/>
 			나머지
 		</div>
+		<br/>
+		<div align = "center">
+		</div>
+		<div>
+		체리노 3스 레벨 　
+		<select name="CostRecoveryBonus" onChange={this.CostRecoveryChange}>
+          <option value="0.0">0 (없음)</option>
+          <option value="269.0">1</option>
+		  <option value="283.0">2</option>
+		  <option value="296.0">3</option>
+		  <option value="350.0">4</option>
+		  <option value="363.0">5</option>
+		  <option value="377.0">6</option>
+		  <option value="431.0">7</option>
+		  <option value="444.0">8</option>
+		  <option value="457.0">9</option>
+		  <option value="511.0">10</option>
+        </select>
+		</div>
 		<br/><br/>
 		<label>{this.state.TargetscoreString[this.state.Language]}</label>
         <input
@@ -245,7 +286,9 @@ class App extends React.Component {
 		<br/>
         <div>
           <text name="result" id="result">
-			<div>{this.state.BattleTime}{this.state.SecondString[this.state.Language]}</div>
+			<div>전투 시간 : {this.state.BattleTimeMinute}{this.state.MinuteString[this.state.Language]} {this.state.BattleTime}{this.state.SecondString[this.state.Language]}</div>
+			<div>남은 시간 : {this.state.LeftTimeMinute}{this.state.MinuteString[this.state.Language]} {this.state.LeftTime}{this.state.SecondString[this.state.Language]}</div>
+			<div>사용 가능한 코스트 : {this.state.UseableCost}</div>
           </text>
         </div>
 		<br/><br/>
@@ -253,7 +296,7 @@ class App extends React.Component {
 			<input
 			  id="Korean"
 			  value="Kor"
-			  name="language"
+			  name="Kor"
 			  type="radio"
 			  checked={this.state.Language === "Kor"}
 			  onChange={this.LanguageChange}
@@ -262,7 +305,7 @@ class App extends React.Component {
 			<input
 			  id="English"
 			  value="Eng"
-			  name="language"
+			  name="Eng"
 			  type="radio"
 			  checked={this.state.Language === "Eng"}
 			  onChange={this.LanguageChange}
