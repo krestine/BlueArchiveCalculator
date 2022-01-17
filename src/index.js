@@ -23,11 +23,21 @@ class App extends React.Component {
     StaString: {"Kor":"안정성", "Eng":"Stability"},
     DefString: {"Kor":"방어력", "Eng":"Defence"},
     EvaString: {"Kor":"회피", "Eng":"Evasion"},
-    ResString: {"Kor":"치명타 저항", "Eng":"Crit Resistance"},
-    RealCriString: {"Kor":"실제 치명타 확률 : ", "Eng":"Critical Rate : "},
-    RealAccString: {"Kor":"실제 명중률 : ", "Eng":"Accuracy Rate : "},
-    RealDefString: {"Kor":"실제 받는 피해 : ", "Eng":"Damage Taken : "},
-    MinDamString: {"Kor":"대미지 범위 : ", "Eng":"Dam. Variance : "},
+    ResString: {"Kor":"치명타 저항", "Eng":"Crit resistance"},
+    RealCriString: {"Kor":"실제 치명타 확률 : ", "Eng":"Critical rate : "},
+    RealAccString: {"Kor":"실제 명중률 : ", "Eng":"Accuracy rate : "},
+    RealDefString: {"Kor":"실제 받는 피해 : ", "Eng":"Damage taken : "},
+    MinDamString: {"Kor":"대미지 범위 : ", "Eng":"Dam. variance : "},
+	RaidString: {"Kor":"총력전 시간 계산기", "Eng":"Raid Time Calculator"},
+	HardcoreString: {"Kor":"하드코어", "Eng":"Hardcore"},
+	ExtremeString: {"Kor":"익스트림", "Eng":"Extreme"},
+	RaidType2String: {"Kor":"비나/카이텐", "Eng":"Binah/Kaiten"},
+	RaidType1String: {"Kor":"나머지", "Eng":"The rest"},
+	CostBonusString:{"Kor":"체리노 3스 레벨 : ", "Eng":"Cherino sub level : "},
+	BattleTimeString:{"Kor":"전투 시간 : ", "Eng":"Battle time : "},
+	LeftTimeString:{"Kor":"남은 시간 : ", "Eng":"Time left : "},
+	UseableCostString:{"Kor":"사용 가능한 코스트 : ", "Eng":"Available costs : "},
+	NoneString:{"Kor":"없음", "Eng":"None"},
 	TargetScore: "",
 	BattleTime: "",
 	BattleTimeMinute: "",
@@ -211,7 +221,7 @@ class App extends React.Component {
         </div>
         <br/><br/>
 		
-		<div>총력전 시간 계산기</div>
+		<div><label>{this.state.RaidString[this.state.Language]}</label></div>
 		<br/>
 		<div align="center">
 			<input
@@ -222,7 +232,7 @@ class App extends React.Component {
 			  checked={this.state.RaidDifficulty === "Hardcore"}
 			  onChange={this.DifficultyChange}
 			/>
-			하드코어 　
+			{this.state.HardcoreString[this.state.Language]} 　
 			<input
 			  id="Extreme"
 			  value="Extreme"
@@ -231,7 +241,7 @@ class App extends React.Component {
 			  checked={this.state.RaidDifficulty === "Extreme"}
 			  onChange={this.DifficultyChange}
 			/>
-			익스트림
+			{this.state.ExtremeString[this.state.Language]}
 		</div><br/>
 		<div align="center">
 			<input
@@ -242,7 +252,7 @@ class App extends React.Component {
 			  checked={this.state.RaidType === "Type2"}
 			  onChange={this.TypeChange}
 			/>
-			비나, 카이텐 　
+			{this.state.RaidType2String[this.state.Language]} 　
 			<input
 			  id="Type1"
 			  value="Type1"
@@ -251,15 +261,15 @@ class App extends React.Component {
 			  checked={this.state.RaidType === "Type1"}
 			  onChange={this.TypeChange}
 			/>
-			나머지
+			{this.state.RaidType1String[this.state.Language]}
 		</div>
 		<br/>
 		<div align = "center">
 		</div>
 		<div>
-		체리노 3스 레벨 　
+		<text>{this.state.CostBonusString[this.state.Language]}</text>
 		<select name="CostRecoveryBonus" onChange={this.CostRecoveryChange}>
-          <option value="0.0">0 (없음)</option>
+          <option value="0.0">0 ({this.state.NoneString[this.state.Language]})</option>
           <option value="269.0">1</option>
 		  <option value="283.0">2</option>
 		  <option value="296.0">3</option>
@@ -286,9 +296,9 @@ class App extends React.Component {
 		<br/>
         <div>
           <text name="result" id="result">
-			<div>전투 시간 : {this.state.BattleTimeMinute}{this.state.MinuteString[this.state.Language]} {this.state.BattleTime}{this.state.SecondString[this.state.Language]}</div>
-			<div>남은 시간 : {this.state.LeftTimeMinute}{this.state.MinuteString[this.state.Language]} {this.state.LeftTime}{this.state.SecondString[this.state.Language]}</div>
-			<div>사용 가능한 코스트 : {this.state.UseableCost}</div>
+			<div>{this.state.BattleTimeString[this.state.Language]}{this.state.BattleTimeMinute}{this.state.MinuteString[this.state.Language]} {this.state.BattleTime}{this.state.SecondString[this.state.Language]}</div>
+			<div>{this.state.LeftTimeString[this.state.Language]}{this.state.LeftTimeMinute}{this.state.MinuteString[this.state.Language]} {this.state.LeftTime}{this.state.SecondString[this.state.Language]}</div>
+			<div>{this.state.UseableCostString[this.state.Language]}{this.state.UseableCost}</div>
           </text>
         </div>
 		<br/><br/>

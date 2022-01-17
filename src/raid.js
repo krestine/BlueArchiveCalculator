@@ -2,7 +2,7 @@ import React from "react";
 import { render } from "react-dom";
 import "./index.css";
 
-class App extends React.Component {
+class Raid extends React.Component {
   state = {
     TargetScore: "",
 	BattleTime: "",
@@ -128,4 +128,4 @@ class App extends React.Component {
   }
 }
 
-render(<App />, document.getElementById("root"));
+export default raid;
