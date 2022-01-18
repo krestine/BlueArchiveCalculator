@@ -34,3 +34,18 @@ button {
 text{
 	font-weight: bold;
 }
+
+.header{
+display: block;
+  top: 0;
+  left: 0;
+  background-color: aqua;
+  width: 100%;
+}
+
+.block {
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  text-align: center;
+}
