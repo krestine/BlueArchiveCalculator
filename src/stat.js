@@ -1,7 +1,14 @@
 import React from "react";
 import { render } from "react-dom";
+import { setCookie, getCookie } from './cookie';
 
 class Stat extends React.Component {
+	componentDidMount() {
+		this.setState({ Language: getCookie(["Language"])});
+		if(getCookie(["Language"]) == null){
+			this.setState({ Language: "Kor"});
+		}
+	}
   state = {
     Cri: "",
     Acc: "",
@@ -116,6 +123,7 @@ class Stat extends React.Component {
     this.setState({
       Language: e.target.value
     });
+	setCookie("Language", e.target.value, {maxAge: 2592000});
   };
 
   DifficultyChange = (e) => {

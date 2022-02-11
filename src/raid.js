@@ -1,8 +1,28 @@
 import React from "react";
 import { render } from "react-dom";
 import "./index.css";
+import { setCookie, getCookie } from './cookie';
 
 class Raid extends React.Component {
+	componentDidMount() {
+		this.setState({ Language: getCookie(["Language"])});
+		if(getCookie(["Language"]) == null){
+			this.setState({ Language: "Kor"});
+		}
+		this.setState({ RaidType: getCookie(["RaidType"])});
+		if(getCookie(["RaidType"]) == null){
+			this.setState({ RaidType: "Type1"});
+		}
+		this.setState({ RaidDifficulty: getCookie(["RaidDifficulty"])});
+		if(getCookie(["RaidDifficulty"]) == null){
+			this.setState({ RaidDifficulty: "Hardcore"});
+		}
+		//this.setState({ CostRecoveryBonus: "444.0"});
+		//this.setState({ CostRecoveryBonus: getCookie(["CostBonus"])});
+		//if(getCookie(["CostBonus"]) == null){
+		//	this.setState({ CostRecoveryBonus: 0});
+		//}
+	}
   state = {
     Language: "Kor",
     ResetString: {"Kor":"초기화", "Eng":"Reset"},
@@ -28,14 +48,20 @@ class Raid extends React.Component {
 	CostRecoveryBonus: 0,
 	RaidType: "Type1",
 	RaidDifficulty: "Hardcore",
+	InvalidScore: "",
+	LeftTimePartyCount: "",
 	RaidBonusScoreType1: {"Hardcore":4600000.0, "Extreme":9200000.0},
 	RaidBonusScoreType2: {"Hardcore":4984000.0, "Extreme":9968000.0},
+	RaidMaxScoreType1: {"Hardcore":7672000.0, "Extreme":15344000.0},
+	RaidMaxScoreType2: {"Hardcore":7288000.0, "Extreme":14576000.0},
 	RaidTimeScore: {"Hardcore":3200.0, "Extreme":6400.0},
 	RaidTimeMult: {"Type1":960.0, "Type2":720.0},
 	RaidLeftTime: {"Type1":240.0, "Type2":180.0},
     TargetscoreString: {"Kor":"목표 점수", "Eng":"Target score"},
 	MinuteString: {"Kor":"분", "Eng":"min"},
-	SecondString: {"Kor":"초", "Eng":"sec"}
+	SecondString: {"Kor":"초", "Eng":"sec"},
+	InvalidScoreString: {"Kor":"잘못된 점수", "Eng":"Invalid score"},
+	PartyString: {"Kor": "파티", "Eng": "Party"}
   };
 
   safeParseFloat = (str) => {
@@ -61,30 +87,88 @@ class Raid extends React.Component {
     this.setState({
       CostRecoveryBonus: e.target.value
     });
+	//setCookie("CostBonus", e.target.value, {maxAge: 2592000});
   };
   
   calculateRaid = () => {
 	var timeScore = this.state.RaidTimeScore[this.state.RaidDifficulty];
 	var timeMult = this.state.RaidTimeMult[this.state.RaidType];
 	var bonusScore = 0;
+	var maxScore = 0;
 	if (this.state.RaidType === "Type1") {
 		bonusScore = this.state.RaidBonusScoreType1[this.state.RaidDifficulty];
+		maxScore = this.state.RaidMaxScoreType1[this.state.RaidDifficulty];
 	} else {
 		bonusScore = this.state.RaidBonusScoreType2[this.state.RaidDifficulty];
+		maxScore = this.state.RaidMaxScoreType2[this.state.RaidDifficulty];
 	}
 	var targetTime = (((this.state.TargetScore - bonusScore) / timeScore) - timeMult) * -1.0;
-	var targetMinute = parseInt(targetTime / 60, 10);
-	var leftTime = this.state.RaidLeftTime[this.state.RaidType] - targetTime;
-	var leftMinute = parseInt(leftTime / 60, 10);
-	var recoveryRate = 4200.0 + parseFloat(this.state.CostRecoveryBonus);
-	var totalCost = (recoveryRate / 10000.0) * (targetTime - 2.0);
-	targetTime = targetTime % 60;
-	leftTime = leftTime % 60;
-	this.setState({ BattleTime: targetTime.toFixed(3) });
-	this.setState({ BattleTimeMinute: targetMinute });
-	this.setState({ LeftTime: leftTime.toFixed(3) });
-	this.setState({ LeftTimeMinute: leftMinute });
-	this.setState({ UseableCost: totalCost.toFixed(3) });
+	var tempTargetScore = this.state.TargetScore;
+	if(this.state.TargetScore > maxScore){
+		this.setState({ InvalidScore: this.state.InvalidScoreString[this.state.Language]});
+	} else if(this.state.TargetScore < bonusScore){
+		while(this.state.TargetScore < (maxScore * 0.1)){
+			this.state.TargetScore *= 10;
+		}
+		if(this.state.TargetScore > bonusScore){
+			targetTime = (((this.state.TargetScore - bonusScore) / timeScore) - timeMult) * -1.0;
+			this.setState({ InvalidScore: ""});
+			var targetMinute = parseInt(targetTime / 60, 10);
+			var leftTime = this.state.RaidLeftTime[this.state.RaidType] - targetTime;
+			var leftTimeCount = 0;
+			if(leftTime < 0){
+				while(leftTime < 0){
+					leftTime += this.state.RaidLeftTime[this.state.RaidType];
+					leftTimeCount += 1;
+				}
+			}
+			var leftMinute = parseInt(leftTime / 60, 10);
+			var recoveryRate = 4200.0 + parseFloat(this.state.CostRecoveryBonus);
+			var totalCost = (recoveryRate / 10000.0) * (targetTime - 2.0);
+			targetTime = targetTime % 60;
+			leftTime = leftTime % 60;
+			var tempLeftTimePartyCount = " + " + leftTimeCount.toString() + this.state.PartyString[this.state.Language];
+			if(leftTimeCount == 0){
+				tempLeftTimePartyCount = "";
+			}
+			this.setState({ BattleTime: targetTime.toFixed(3) });
+			this.setState({ BattleTimeMinute: targetMinute });
+			this.setState({ LeftTime: leftTime.toFixed(3) });
+			this.setState({ LeftTimeMinute: leftMinute });
+			this.setState({ LeftTimePartyCount: tempLeftTimePartyCount });
+			this.setState({ UseableCost: totalCost.toFixed(3) });
+		}
+		else{
+			this.setState({ InvalidScore: this.state.InvalidScoreString[this.state.Language]});
+			this.setState({ TargetScore: tempTargetScore});
+		}
+	} else {
+		this.setState({ InvalidScore: ""});
+		var targetMinute = parseInt(targetTime / 60, 10);
+		var leftTime = this.state.RaidLeftTime[this.state.RaidType] - targetTime;
+		var leftTimeCount = 0;
+		if(leftTime < 0){
+			while(leftTime < 0){
+				leftTime += this.state.RaidLeftTime[this.state.RaidType];
+				leftTimeCount += 1;
+			}
+		}
+		var leftMinute = parseInt(leftTime / 60, 10);
+		var recoveryRate = 4200.0 + parseFloat(this.state.CostRecoveryBonus);
+		var totalCost = (recoveryRate / 10000.0) * (targetTime - 2.0);
+		targetTime = targetTime % 60;
+		leftTime = leftTime % 60;
+		var tempLeftTimePartyCount = " + " + leftTimeCount.toString() + this.state.PartyString[this.state.Language];
+		if(leftTimeCount == 0){
+			tempLeftTimePartyCount = "";
+		}
+		this.setState({ BattleTime: targetTime.toFixed(3) });
+		this.setState({ BattleTimeMinute: targetMinute });
+		this.setState({ LeftTime: leftTime.toFixed(3) });
+		this.setState({ LeftTimeMinute: leftMinute });
+		this.setState({ LeftTimePartyCount: tempLeftTimePartyCount });
+		this.setState({ UseableCost: totalCost.toFixed(3) });
+	}
   };
 
   resetAll = () => {
@@ -99,18 +183,21 @@ class Raid extends React.Component {
     this.setState({
       Language: e.target.value
     });
+	setCookie("Language", e.target.value, {maxAge: 2592000});
   };
 
   DifficultyChange = (e) => {
     this.setState({
       RaidDifficulty: e.target.value
     });
+	setCookie("RaidDifficulty", e.target.value, {maxAge: 2592000});
   };
   
   TypeChange = (e) => {
     this.setState({
       RaidType: e.target.value
     });
+	setCookie("RaidType", e.target.value, {maxAge: 2592000});
   };
 
   render() {
@@ -191,8 +278,9 @@ class Raid extends React.Component {
 		<br/>
         <div>
           <text name="result" id="result">
+			<div><font color="Red">{this.state.InvalidScore}</font></div>
 			<div>{this.state.BattleTimeString[this.state.Language]}{this.state.BattleTimeMinute}{this.state.MinuteString[this.state.Language]} {this.state.BattleTime}{this.state.SecondString[this.state.Language]}</div>
-			<div>{this.state.LeftTimeString[this.state.Language]}{this.state.LeftTimeMinute}{this.state.MinuteString[this.state.Language]} {this.state.LeftTime}{this.state.SecondString[this.state.Language]}</div>
+			<div>{this.state.LeftTimeString[this.state.Language]}{this.state.LeftTimeMinute}{this.state.MinuteString[this.state.Language]} {this.state.LeftTime}{this.state.SecondString[this.state.Language]}{this.state.LeftTimePartyCount}</div>
 			<div>{this.state.UseableCostString[this.state.Language]}{this.state.UseableCost}</div>
           </text>
         </div>
