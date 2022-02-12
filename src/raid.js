@@ -104,7 +104,7 @@ class Raid extends React.Component {
 	}
 	var targetTime = (((this.state.TargetScore - bonusScore) / timeScore) - timeMult) * -1.0;
 	var tempTargetScore = this.state.TargetScore;
-	if(this.state.TargetScore > maxScore){
+	if(this.state.TargetScore > maxScore || this.state.TargetScore < 10){
 		this.setState({ InvalidScore: this.state.InvalidScoreString[this.state.Language]});
 	} else if(this.state.TargetScore < bonusScore){
 		while(this.state.TargetScore < (maxScore * 0.1)){
