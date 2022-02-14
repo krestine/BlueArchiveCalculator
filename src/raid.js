@@ -200,6 +200,12 @@ class Raid extends React.Component {
 	setCookie("RaidType", e.target.value, {maxAge: 2592000});
   };
 
+	handleKeyPress = e => {
+		if(e.key === 'Enter') {
+			this.calculateRaid();
+		}
+	}
+
   render() {
     return (
       <div>
@@ -270,6 +276,7 @@ class Raid extends React.Component {
           value={this.state.TargetScore}
           name="TargetScore"
           onChange={(evt) => this.updateInputValue(evt)}
+		  onKeyPress={this.handleKeyPress}
         />
         <br/><br/>
 		<div align="center">

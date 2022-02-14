@@ -194,6 +194,12 @@ class Stat extends React.Component {
     });
   };
 
+	handleKeyPress = e => {
+		if(e.key === 'Enter') {
+			this.calculate();
+		}
+	}
+
   render() {
     return (
       <div>
@@ -202,18 +208,21 @@ class Stat extends React.Component {
           value={this.state.Cri}
           name="Cri"
           onChange={(evt) => this.updateInputValue(evt)}
+		  onKeyPress={this.handleKeyPress}
         />
         <label>{this.state.AccString[this.state.Language]}</label>
         <input
           value={this.state.Acc}
           name="Acc"
           onChange={(evt) => this.updateInputValue(evt)}
+		  onKeyPress={this.handleKeyPress}
         />
         <label>{this.state.StaString[this.state.Language]}</label>
         <input
           value={this.state.Sta}
           name="Sta"
           onChange={(evt) => this.updateInputValue(evt)}
+		  onKeyPress={this.handleKeyPress}
         />
         <br/><br/>
         <label>{this.state.DefString[this.state.Language]}</label>
@@ -221,18 +230,21 @@ class Stat extends React.Component {
           value={this.state.Def}
           name="Def"
           onChange={(evt) => this.updateInputValue(evt)}
+		  onKeyPress={this.handleKeyPress}
         />
         <label>{this.state.EvaString[this.state.Language]}</label>
         <input
           value={this.state.Eva}
           name="Eva"
           onChange={(evt) => this.updateInputValue(evt)}
+		  onKeyPress={this.handleKeyPress}
         />
         <label>{this.state.ResString[this.state.Language]}</label>
         <input
           value={this.state.Res}
           name="Res"
           onChange={(evt) => this.updateInputValue(evt)}
+		  onKeyPress={this.handleKeyPress}
         />
         <br/><br/>
 		<label>{this.state.CriBonusString[this.state.Language]}</label>
@@ -240,24 +252,28 @@ class Stat extends React.Component {
           value={this.state.CriBonus}
           name="CriBonus"
           onChange={(evt) => this.updateInputValue2(evt)}
+		  onKeyPress={this.handleKeyPress}
         />
 		<label>{this.state.AccBonusString[this.state.Language]}</label>
 		<input
           value={this.state.AccBonus}
           name="AccBonus"
           onChange={(evt) => this.updateInputValue2(evt)}
+		  onKeyPress={this.handleKeyPress}
         />
 		<label>{this.state.EvaBonusString[this.state.Language]}</label>
 		<input
           value={this.state.EvaBonus}
           name="EvaBonus"
           onChange={(evt) => this.updateInputValue2(evt)}
+		  onKeyPress={this.handleKeyPress}
         />
 		<label>{this.state.DefBonusString[this.state.Language]}</label>
 		<input
           value={this.state.DefBonus}
           name="DefBonus"
           onChange={(evt) => this.updateInputValue2(evt)}
+		  onKeyPress={this.handleKeyPress}
         />
 		<br/><br/>
 		<div align="center">
