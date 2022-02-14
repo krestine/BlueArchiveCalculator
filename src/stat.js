@@ -20,11 +20,19 @@ class Stat extends React.Component {
     RealAcc: "",
     RealDef: "",
     MinDam: "",
+	CriBonus: "",
+	AccBonus: "",
+	EvaBonus: "",
+	DefBonus: "",
     Language: "Kor",
 	ProgramMode: "Stat",
     ResetString: {"Kor":"초기화", "Eng":"Reset"},
     CalculateString: {"Kor":"계산하기", "Eng":"Calculate"},
     CriString: {"Kor":"치명타", "Eng":"Critical"},
+	CriBonusString: {"Kor":"치명타 버프/디버프 (%)", "Eng":"Critical Buff/Debuff (%)"},
+	AccBonusString: {"Kor":"명중 버프/디버프 (%)", "Eng":"Accuracy Buff/Debuff (%)"},
+	EvaBonusString: {"Kor":"회피 버프/디버프 (%)", "Eng":"Evasion Buff/Debuff (%)"},
+	DefBonusString: {"Kor":"방어력 버프/디버프 (%)", "Eng":"Defence Buff/Debuff (%)"},
     AccString: {"Kor":"명중", "Eng":"Accuracy"},
     StaString: {"Kor":"안정성", "Eng":"Stability"},
     DefString: {"Kor":"방어력", "Eng":"Defence"},
@@ -55,6 +63,11 @@ class Stat extends React.Component {
     }
   };
   
+  updateInputValue2 = (evt) => {
+    const { name, value } = evt.target;
+    this.setState({[name]: value});
+  };
+  
   CostRecoveryChange = (e) => {
     this.setState({
       CostRecoveryBonus: e.target.value
@@ -62,15 +75,84 @@ class Stat extends React.Component {
   };
 
   calculate = () => {
-	var tempCri = this.state.Cri - this.state.Res;
+	  var realCriBonus = 0.0;
+	  var realAccBonus = 0.0;
+	  var realEvaBonus = 0.0;
+	  var realDefBonus = 0.0;
+	  
+	var tempCriBonus = this.state.CriBonus.split(" ");
+	var tempCriBonusTotal = 0.0;
+	for(var i=0;i<tempCriBonus.length;i++){
+		var tempFloatCri = parseFloat(tempCriBonus[i]);
+		if (!Number.isNaN(tempFloatCri)){
+			tempCriBonusTotal = tempCriBonusTotal + tempFloatCri;
+		}
+	}
+	if (Number.isNaN(tempCriBonusTotal)){
+		realCriBonus = 1;
+	}
+	else{
+		var finalCriBonus = (tempCriBonusTotal * 0.01) + 1
+		realCriBonus = finalCriBonus;
+	}
+	
+	var tempAccBonus = this.state.AccBonus.split(" ");
+	var tempAccBonusTotal = 0.0;
+	for(var i=0;i<tempAccBonus.length;i++){
+		var tempFloatAcc = parseFloat(tempAccBonus[i]);
+		if (!Number.isNaN(tempFloatAcc)){
+			tempAccBonusTotal = tempAccBonusTotal + tempFloatAcc;
+		}
+	}
+	if (Number.isNaN(tempAccBonusTotal)){
+		realAccBonus = 1;
+	}
+	else{
+		var finalAccBonus = (tempAccBonusTotal * 0.01) + 1
+		realAccBonus = finalAccBonus;
+	}
+	
+	var tempEvaBonus = this.state.EvaBonus.split(" ");
+	var tempEvaBonusTotal = 0.0;
+	for(var i=0;i<tempEvaBonus.length;i++){
+		var tempFloatEva = parseFloat(tempEvaBonus[i]);
+		if (!Number.isNaN(tempFloatEva)){
+			tempEvaBonusTotal = tempEvaBonusTotal + tempFloatEva;
+		}
+	}
+	if (Number.isNaN(tempEvaBonusTotal)){
+		realEvaBonus = 1;
+	}
+	else{
+		var finalEvaBonus = (tempEvaBonusTotal * 0.01) + 1
+		realEvaBonus = finalEvaBonus;
+	}
+	
+	var tempDefBonus = this.state.DefBonus.split(" ");
+	var tempDefBonusTotal = 0.0;
+	for(var i=0;i<tempDefBonus.length;i++){
+		var tempFloatDef = parseFloat(tempDefBonus[i]);
+		if (!Number.isNaN(tempFloatDef)){
+			tempDefBonusTotal = tempDefBonusTotal + tempFloatDef;
+		}
+	}
+	if (Number.isNaN(tempDefBonusTotal)){
+		realDefBonus = 1;
+	}
+	else{
+		var finalDefBonus = (tempDefBonusTotal * 0.01) + 1
+		realDefBonus = finalDefBonus;
+	}
+	
+	var tempCri = (this.state.Cri * realCriBonus) - this.state.Res;
 	var finalCri = (tempCri * 6000) / (tempCri * 6000 + 4000000);
 	if(tempCri < 0){
 		finalCri = 0;
 	}
 	this.setState({ RealCri: (finalCri * 100).toFixed(3) });
-	var finalDef = 1 / (1 + this.state.Def / 1666.667);
+	var finalDef = 1 / (1 + (this.state.Def * realDefBonus) / 1666.667);
 	this.setState({ RealDef: (finalDef * 100).toFixed(3) });
-	var tempAcc = this.state.Eva - this.state.Acc;
+	var tempAcc = (this.state.Eva * realEvaBonus) - (this.state.Acc * realAccBonus);
 	var finalAcc = 0;
 	if (this.state.Eva > this.state.Acc) {
 	  finalAcc = 2000 / (tempAcc * 3 + 2000);
@@ -80,30 +162,6 @@ class Stat extends React.Component {
 	this.setState({ RealAcc: (finalAcc * 100).toFixed(3) });
 	var finalMinDam = 0.2 + this.state.Sta / (this.state.Sta + 1000);
 	this.setState({ MinDam: (finalMinDam * 100).toFixed(3) });
-  };
-  
-  calculateRaid = () => {
-	var timeScore = this.state.RaidTimeScore[this.state.RaidDifficulty];
-	var timeMult = this.state.RaidTimeMult[this.state.RaidType];
-	var bonusScore = 0;
-	if (this.state.RaidType === "Type1") {
-		bonusScore = this.state.RaidBonusScoreType1[this.state.RaidDifficulty];
-	} else {
-		bonusScore = this.state.RaidBonusScoreType2[this.state.RaidDifficulty];
-	}
-	var targetTime = (((this.state.TargetScore - bonusScore) / timeScore) - timeMult) * -1.0;
-	var targetMinute = parseInt(targetTime / 60, 10);
-	var leftTime = this.state.RaidLeftTime[this.state.RaidType] - targetTime;
-	var leftMinute = parseInt(leftTime / 60, 10);
-	var recoveryRate = 4200.0 + parseFloat(this.state.CostRecoveryBonus);
-	var totalCost = (recoveryRate / 10000.0) * (targetTime - 2.0);
-	targetTime = targetTime % 60;
-	leftTime = leftTime % 60;
-	this.setState({ BattleTime: targetTime.toFixed(3) });
-	this.setState({ BattleTimeMinute: targetMinute });
-	this.setState({ LeftTime: leftTime.toFixed(3) });
-	this.setState({ LeftTimeMinute: leftMinute });
-	this.setState({ UseableCost: totalCost.toFixed(3) });
   };
 
   resetAll = () => {
@@ -116,6 +174,10 @@ class Stat extends React.Component {
     this.setState({ RealCri: "" });
     this.setState({ RealAcc: "" });
     this.setState({ RealDef: "" });
+	this.setState({ CriBonus: "" });
+    this.setState({ AccBonus: "" });
+    this.setState({ DefBonus: "" });
+	this.setState({ EvaBonus: "" });
     this.setState({ MinDam: "" });
   };
 
@@ -173,6 +235,31 @@ class Stat extends React.Component {
           onChange={(evt) => this.updateInputValue(evt)}
         />
         <br/><br/>
+		<label>{this.state.CriBonusString[this.state.Language]}</label>
+		<input
+          value={this.state.CriBonus}
+          name="CriBonus"
+          onChange={(evt) => this.updateInputValue2(evt)}
+        />
+		<label>{this.state.AccBonusString[this.state.Language]}</label>
+		<input
+          value={this.state.AccBonus}
+          name="AccBonus"
+          onChange={(evt) => this.updateInputValue2(evt)}
+        />
+		<label>{this.state.EvaBonusString[this.state.Language]}</label>
+		<input
+          value={this.state.EvaBonus}
+          name="EvaBonus"
+          onChange={(evt) => this.updateInputValue2(evt)}
+        />
+		<label>{this.state.DefBonusString[this.state.Language]}</label>
+		<input
+          value={this.state.DefBonus}
+          name="DefBonus"
+          onChange={(evt) => this.updateInputValue2(evt)}
+        />
+		<br/><br/>
 		<div align="center">
         <button onClick={this.calculate}>{this.state.CalculateString[this.state.Language]}</button>
         <button onClick={this.resetAll}>{this.state.ResetString[this.state.Language]}</button>

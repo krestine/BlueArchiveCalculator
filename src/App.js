@@ -27,7 +27,7 @@ function App() {
           <button>홈</button>
         </Link>
 	    <Link to="/about">
-          <button>정보</button>
+          <button>사용법/정보</button>
         </Link>
 		</div>
       </header>
