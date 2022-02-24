@@ -124,7 +124,7 @@ class Raid extends React.Component {
 			}
 			var leftMinute = parseInt(leftTime / 60, 10);
 			var recoveryRate = 4200.0 + parseFloat(this.state.CostRecoveryBonus);
-			var totalCost = (recoveryRate / 10000.0) * (targetTime - 2.0);
+			var totalCost = (recoveryRate / 10000.0) * targetTime;
 			targetTime = targetTime % 60;
 			leftTime = leftTime % 60;
 			var tempLeftTimePartyCount = " + " + leftTimeCount.toString() + this.state.PartyString[this.state.Language];
