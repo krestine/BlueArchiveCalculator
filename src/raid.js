@@ -30,6 +30,7 @@ class Raid extends React.Component {
 	DifficultyString:{"Kor":"난이도", "Eng":"Difficulty"},
 	HardcoreString: {"Kor":"하드코어", "Eng":"Hardcore"},
 	ExtremeString: {"Kor":"익스트림", "Eng":"Extreme"},
+	InsaneString: {"Kor":"인세인", "Eng":"Insane"},
 	RaidTypeString: {"Kor":"보스 이름", "Eng":"Boss name"},
 	RaidType2String: {"Kor":"비나/카이텐", "Eng":"Binah/Kaiten"},
 	RaidType1String: {"Kor":"나머지", "Eng":"The rest"},
@@ -50,11 +51,11 @@ class Raid extends React.Component {
 	RaidDifficulty: "Hardcore",
 	InvalidScore: "",
 	LeftTimePartyCount: "",
-	RaidBonusScoreType1: {"Hardcore":4600000.0, "Extreme":9200000.0},
-	RaidBonusScoreType2: {"Hardcore":4984000.0, "Extreme":9968000.0},
-	RaidMaxScoreType1: {"Hardcore":7672000.0, "Extreme":15344000.0},
-	RaidMaxScoreType2: {"Hardcore":7288000.0, "Extreme":14576000.0},
-	RaidTimeScore: {"Hardcore":3200.0, "Extreme":6400.0},
+	RaidBonusScoreType1: {"Hardcore":4600000.0, "Extreme":9200000.0, "Insane":15640000.0},
+	RaidBonusScoreType2: {"Hardcore":4984000.0, "Extreme":9968000.0, "Insane":16945600.0},
+	RaidMaxScoreType1: {"Hardcore":7672000.0, "Extreme":15344000.0, "Insane":27928000.0},
+	RaidMaxScoreType2: {"Hardcore":7288000.0, "Extreme":14576000.0, "Insane":26161600.0},
+	RaidTimeScore: {"Hardcore":3200.0, "Extreme":6400.0, "Insane":12800.0},
 	RaidTimeMult: {"Type1":960.0, "Type2":720.0},
 	RaidLeftTime: {"Type1":240.0, "Type2":180.0},
     TargetscoreString: {"Kor":"목표 점수", "Eng":"Target score"},
@@ -228,7 +229,16 @@ class Raid extends React.Component {
 			  checked={this.state.RaidDifficulty === "Extreme"}
 			  onChange={this.DifficultyChange}
 			/>
-			{this.state.ExtremeString[this.state.Language]}
+			{this.state.ExtremeString[this.state.Language]}　
+			<input
+			  id="Insane"
+			  value="Insane"
+			  name="RaidDifficulty"
+			  type="radio"
+			  checked={this.state.RaidDifficulty === "Insane"}
+			  onChange={this.DifficultyChange}
+			/>
+			{this.state.InsaneString[this.state.Language]}
 		</div><br/>
 		<div align="center">
 		<text>{this.state.RaidTypeString[this.state.Language]}</text><br/>
