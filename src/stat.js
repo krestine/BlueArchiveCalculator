@@ -154,7 +154,7 @@ class Stat extends React.Component {
 	this.setState({ RealDef: (finalDef * 100).toFixed(3) });
 	var tempAcc = (this.state.Eva * realEvaBonus) - (this.state.Acc * realAccBonus);
 	var finalAcc = 0;
-	if (this.state.Eva > this.state.Acc) {
+	if (this.state.Eva * realEvaBonus > this.state.Acc * realAccBonus) {
 	  finalAcc = 2000 / (tempAcc * 3 + 2000);
 	} else {
 	  finalAcc = 1;

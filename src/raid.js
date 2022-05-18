@@ -33,6 +33,7 @@ class Raid extends React.Component {
 	InsaneString: {"Kor":"인세인", "Eng":"Insane"},
 	RaidTypeString: {"Kor":"보스 이름", "Eng":"Boss name"},
 	RaidType2String: {"Kor":"비나/카이텐", "Eng":"Binah/Kaiten"},
+	RaidType3String: {"Kor":"비나 시가지 (임시)", "Eng":"Binah Street (Temp)"},
 	RaidType1String: {"Kor":"나머지", "Eng":"The rest"},
 	CostBonusString:{"Kor":"체리노 3스 레벨 : ", "Eng":"Cherino sub level : "},
 	BattleTimeString:{"Kor":"전투 시간 : ", "Eng":"Battle time : "},
@@ -53,11 +54,13 @@ class Raid extends React.Component {
 	LeftTimePartyCount: "",
 	RaidBonusScoreType1: {"Hardcore":4600000.0, "Extreme":9200000.0, "Insane":15640000.0},
 	RaidBonusScoreType2: {"Hardcore":4984000.0, "Extreme":9968000.0, "Insane":16945600.0},
+	RaidBonusScoreType3: {"Hardcore":4984000.0, "Extreme":7968000.0, "Insane":16945600.0},
 	RaidMaxScoreType1: {"Hardcore":7672000.0, "Extreme":15344000.0, "Insane":27928000.0},
 	RaidMaxScoreType2: {"Hardcore":7288000.0, "Extreme":14576000.0, "Insane":26161600.0},
+	RaidMaxScoreType3: {"Hardcore":7288000.0, "Extreme":12576000.0, "Insane":26161600.0},
 	RaidTimeScore: {"Hardcore":3200.0, "Extreme":6400.0, "Insane":12800.0},
-	RaidTimeMult: {"Type1":960.0, "Type2":720.0},
-	RaidLeftTime: {"Type1":240.0, "Type2":180.0},
+	RaidTimeMult: {"Type1":960.0, "Type2":720.0, "Type3":720.0},
+	RaidLeftTime: {"Type1":240.0, "Type2":180.0, "Type3":180.0},
     TargetscoreString: {"Kor":"목표 점수", "Eng":"Target score"},
 	MinuteString: {"Kor":"분", "Eng":"min"},
 	SecondString: {"Kor":"초", "Eng":"sec"},
@@ -93,12 +96,25 @@ class Raid extends React.Component {
   
   calculateRaid = () => {
 	var timeScore = this.state.RaidTimeScore[this.state.RaidDifficulty];
+	if (this.state.RaidType === "Type3") {
+		if (this.state.RaidDifficulty === "Extreme") {
+			timeScore = this.state.RaidTimeScore["Hardcore"];
+		}
+	}
 	var timeMult = this.state.RaidTimeMult[this.state.RaidType];
+	if (this.state.RaidType === "Type3") {
+		if (this.state.RaidDifficulty === "Extreme") {
+			timeMult = 1440.0;
+		}
+	}
 	var bonusScore = 0;
 	var maxScore = 0;
 	if (this.state.RaidType === "Type1") {
 		bonusScore = this.state.RaidBonusScoreType1[this.state.RaidDifficulty];
 		maxScore = this.state.RaidMaxScoreType1[this.state.RaidDifficulty];
+	} else if (this.state.RaidType === "Type3") {
+		bonusScore = this.state.RaidBonusScoreType3[this.state.RaidDifficulty];
+		maxScore = this.state.RaidMaxScoreType3[this.state.RaidDifficulty];
 	} else {
 		bonusScore = this.state.RaidBonusScoreType2[this.state.RaidDifficulty];
 		maxScore = this.state.RaidMaxScoreType2[this.state.RaidDifficulty];
@@ -156,7 +172,7 @@ class Raid extends React.Component {
 		}
 		var leftMinute = parseInt(leftTime / 60, 10);
 		var recoveryRate = 4200.0 + parseFloat(this.state.CostRecoveryBonus);
-		var totalCost = (recoveryRate / 10000.0) * (targetTime - 2.0);
+		var totalCost = (recoveryRate / 10000.0) * targetTime;
 		targetTime = targetTime % 60;
 		leftTime = leftTime % 60;
 		var tempLeftTimePartyCount = " + " + leftTimeCount.toString() + this.state.PartyString[this.state.Language];
@@ -260,6 +276,16 @@ class Raid extends React.Component {
 			  onChange={this.TypeChange}
 			/>
 			{this.state.RaidType1String[this.state.Language]}
+			<br/>
+			<input
+			  id="Type3"
+			  value="Type3"
+			  name="RaidType"
+			  type="radio"
+			  checked={this.state.RaidType === "Type3"}
+			  onChange={this.TypeChange}
+			/>
+			{this.state.RaidType3String[this.state.Language]}
 		</div>
 		<br/>
 		<div align = "center">
