@@ -277,20 +277,11 @@ class Raid extends React.Component {
 			/>
 			{this.state.RaidType1String[this.state.Language]}
 			<br/>
-			<input
-			  id="Type3"
-			  value="Type3"
-			  name="RaidType"
-			  type="radio"
-			  checked={this.state.RaidType === "Type3"}
-			  onChange={this.TypeChange}
-			/>
-			{this.state.RaidType3String[this.state.Language]}
 		</div>
 		<br/>
 		<div align = "center">
 		</div>
-		<div>
+		<div align="center">
 		<text>{this.state.CostBonusString[this.state.Language]}</text>
 		<select name="CostRecoveryBonus" onChange={this.CostRecoveryChange}>
           <option value="0.0">0 ({this.state.NoneString[this.state.Language]})</option>
