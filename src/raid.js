@@ -36,6 +36,7 @@ class Raid extends React.Component {
 	RaidType3String: {"Kor":"비나 시가지 (임시)", "Eng":"Binah Street (Temp)"},
 	RaidType1String: {"Kor":"나머지", "Eng":"The rest"},
 	CostBonusString:{"Kor":"체리노 3스 레벨 : ", "Eng":"Cherino sub level : "},
+	CostBonusString2:{"Kor":"히마리 3스 레벨 : ", "Eng":"Himari sub level : "},
 	BattleTimeString:{"Kor":"전투 시간 : ", "Eng":"Battle time : "},
 	LeftTimeString:{"Kor":"남은 시간 : ", "Eng":"Time left : "},
 	UseableCostString:{"Kor":"사용 가능한 코스트 : ", "Eng":"Available costs : "},
@@ -48,6 +49,7 @@ class Raid extends React.Component {
 	UseableCost: "",
 	BattleTimeError: 0,
 	CostRecoveryBonus: 0,
+	CostRecoveryBonus2: 1.0,
 	RaidType: "Type1",
 	RaidDifficulty: "Hardcore",
 	InvalidScore: "",
@@ -90,6 +92,12 @@ class Raid extends React.Component {
   CostRecoveryChange = (e) => {
     this.setState({
       CostRecoveryBonus: e.target.value
+    });
+	//setCookie("CostBonus", e.target.value, {maxAge: 2592000});
+  };
+  CostRecoveryChange2 = (e) => {
+    this.setState({
+      CostRecoveryBonus2: e.target.value
     });
 	//setCookie("CostBonus", e.target.value, {maxAge: 2592000});
   };
@@ -140,7 +148,8 @@ class Raid extends React.Component {
 				}
 			}
 			var leftMinute = parseInt(leftTime / 60, 10);
-			var recoveryRate = 4200.0 + parseFloat(this.state.CostRecoveryBonus);
+			//console.log(parseFloat(this.state.CostRecoveryBonus2 + 1.0));
+			var recoveryRate = (4200.0 + parseFloat(this.state.CostRecoveryBonus)) * parseFloat(this.state.CostRecoveryBonus2 + 1.0);
 			var totalCost = (recoveryRate / 10000.0) * targetTime;
 			targetTime = targetTime % 60;
 			leftTime = leftTime % 60;
@@ -171,7 +180,8 @@ class Raid extends React.Component {
 			}
 		}
 		var leftMinute = parseInt(leftTime / 60, 10);
-		var recoveryRate = 4200.0 + parseFloat(this.state.CostRecoveryBonus);
+		//console.log(parseFloat(this.state.CostRecoveryBonus2 + 1.0));
+		var recoveryRate = (4200.0 + parseFloat(this.state.CostRecoveryBonus)) * parseFloat(this.state.CostRecoveryBonus2 + 1.0);
 		var totalCost = (recoveryRate / 10000.0) * targetTime;
 		targetTime = targetTime % 60;
 		leftTime = leftTime % 60;
@@ -295,6 +305,23 @@ class Raid extends React.Component {
 		  <option value="444.0">8</option>
 		  <option value="457.0">9</option>
 		  <option value="511.0">10</option>
+        </select>
+		</div>
+		<br/>
+		<div align="center">
+		<text>{this.state.CostBonusString2[this.state.Language]}</text>
+		<select name="CostRecoveryBonus2" onChange={this.CostRecoveryChange2}>
+          <option value="1.0">0 ({this.state.NoneString[this.state.Language]})</option>
+          <option value="1.106">1</option>
+		  <option value="1.112">2</option>
+		  <option value="1.117">3</option>
+		  <option value="1.138">4</option>
+		  <option value="1.144">5</option>
+		  <option value="1.149">6</option>
+		  <option value="1.170">7</option>
+		  <option value="1.176">8</option>
+		  <option value="1.181">9</option>
+		  <option value="1.202">10</option>
         </select>
 		</div>
 		<br/><br/>
