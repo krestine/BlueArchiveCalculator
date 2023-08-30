@@ -31,10 +31,10 @@ class Raid extends React.Component {
 	HardcoreString: {"Kor":"하드코어", "Eng":"Hardcore"},
 	ExtremeString: {"Kor":"익스트림", "Eng":"Extreme"},
 	InsaneString: {"Kor":"인세인", "Eng":"Insane"},
+	TormentString: {"Kor":"토먼트", "Eng":"Torment"},
 	RaidTypeString: {"Kor":"보스 이름", "Eng":"Boss name"},
-	RaidType2String: {"Kor":"비나/카이텐", "Eng":"Binah/Kaiten"},
-	RaidType3String: {"Kor":"비나 시가지 (임시)", "Eng":"Binah Street (Temp)"},
 	RaidType1String: {"Kor":"나머지", "Eng":"The rest"},
+	RaidType2String: {"Kor":"비나/카이텐", "Eng":"Binah/Kaiten"},
 	CostBonusString:{"Kor":"체리노 3스 레벨 : ", "Eng":"Cherino sub level : "},
 	CostBonusString2:{"Kor":"히마리 3스 레벨 : ", "Eng":"Himari sub level : "},
 	BattleTimeString:{"Kor":"전투 시간 : ", "Eng":"Battle time : "},
@@ -54,15 +54,13 @@ class Raid extends React.Component {
 	RaidDifficulty: "Hardcore",
 	InvalidScore: "",
 	LeftTimePartyCount: "",
-	RaidBonusScoreType1: {"Hardcore":4600000.0, "Extreme":9200000.0, "Insane":15640000.0},
-	RaidBonusScoreType2: {"Hardcore":4984000.0, "Extreme":9968000.0, "Insane":16945600.0},
-	RaidBonusScoreType3: {"Hardcore":4984000.0, "Extreme":7968000.0, "Insane":16945600.0},
-	RaidMaxScoreType1: {"Hardcore":7672000.0, "Extreme":15344000.0, "Insane":27928000.0},
-	RaidMaxScoreType2: {"Hardcore":7288000.0, "Extreme":14576000.0, "Insane":26161600.0},
-	RaidMaxScoreType3: {"Hardcore":7288000.0, "Extreme":12576000.0, "Insane":26161600.0},
-	RaidTimeScore: {"Hardcore":3200.0, "Extreme":6400.0, "Insane":12800.0},
-	RaidTimeMult: {"Type1":960.0, "Type2":720.0, "Type3":720.0},
-	RaidLeftTime: {"Type1":240.0, "Type2":180.0, "Type3":180.0},
+	RaidBonusScoreType1: {"Hardcore":4216000.0, "Extreme":10160000.0, "Insane":21016000.0, "Torment":31708000.0},
+	RaidBonusScoreType2: {"Hardcore":3832000.0, "Extreme":9392000.0, "Insane":19249600.0, "Torment":31076000.0},
+	RaidMaxScoreType1: {"Hardcore":7672000.0, "Extreme":15344000.0, "Insane":27928000.0, "Torment":40348000.0},
+	RaidMaxScoreType2: {"Hardcore":7288000.0, "Extreme":14576000.0, "Insane":26161600.0, "Torment":39716000.0},
+	RaidTimeScore: {"Hardcore":960.0, "Extreme":1440.0, "Insane":1920.0, "Torment":2400.0},
+	RaidTimeMult: {"Type1":3600.0, "Type2":3600.0},
+	RaidLeftTime: {"Type1":240.0, "Type2":180.0},
     TargetscoreString: {"Kor":"목표 점수", "Eng":"Target score"},
 	MinuteString: {"Kor":"분", "Eng":"min"},
 	SecondString: {"Kor":"초", "Eng":"sec"},
@@ -104,25 +102,12 @@ class Raid extends React.Component {
   
   calculateRaid = () => {
 	var timeScore = this.state.RaidTimeScore[this.state.RaidDifficulty];
-	if (this.state.RaidType === "Type3") {
-		if (this.state.RaidDifficulty === "Extreme") {
-			timeScore = this.state.RaidTimeScore["Hardcore"];
-		}
-	}
 	var timeMult = this.state.RaidTimeMult[this.state.RaidType];
-	if (this.state.RaidType === "Type3") {
-		if (this.state.RaidDifficulty === "Extreme") {
-			timeMult = 1440.0;
-		}
-	}
 	var bonusScore = 0;
 	var maxScore = 0;
 	if (this.state.RaidType === "Type1") {
 		bonusScore = this.state.RaidBonusScoreType1[this.state.RaidDifficulty];
 		maxScore = this.state.RaidMaxScoreType1[this.state.RaidDifficulty];
-	} else if (this.state.RaidType === "Type3") {
-		bonusScore = this.state.RaidBonusScoreType3[this.state.RaidDifficulty];
-		maxScore = this.state.RaidMaxScoreType3[this.state.RaidDifficulty];
 	} else {
 		bonusScore = this.state.RaidBonusScoreType2[this.state.RaidDifficulty];
 		maxScore = this.state.RaidMaxScoreType2[this.state.RaidDifficulty];
@@ -255,7 +240,7 @@ class Raid extends React.Component {
 			  checked={this.state.RaidDifficulty === "Extreme"}
 			  onChange={this.DifficultyChange}
 			/>
-			{this.state.ExtremeString[this.state.Language]}　
+			{this.state.ExtremeString[this.state.Language]}<br/>
 			<input
 			  id="Insane"
 			  value="Insane"
@@ -264,7 +249,16 @@ class Raid extends React.Component {
 			  checked={this.state.RaidDifficulty === "Insane"}
 			  onChange={this.DifficultyChange}
 			/>
-			{this.state.InsaneString[this.state.Language]}
+			{this.state.InsaneString[this.state.Language]}　
+			<input
+			  id="Torment"
+			  value="Torment"
+			  name="RaidDifficulty"
+			  type="radio"
+			  checked={this.state.RaidDifficulty === "Torment"}
+			  onChange={this.DifficultyChange}
+			/>
+			{this.state.TormentString[this.state.Language]}
 		</div><br/>
 		<div align="center">
 		<text>{this.state.RaidTypeString[this.state.Language]}</text><br/>
